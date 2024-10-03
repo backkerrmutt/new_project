@@ -4,16 +4,18 @@ import tkinter as tk
 root = tk.Tk()
 
 #ขนากหน้าต่างหลัก
-root.geometry("430x740")
+root.geometry("500x500")
 
-root.title("MRT")
+root.title("Tkinter Demo")
 
 # สร้าง label
-label = tk.Label(root, text="Train Tickets")
+label = tk.Label(root, text="Hello from Tkinter")
 label.pack()
 
 # สร้างปุ่ม
-Bt_Submit = tk.Button(root, text="OK", command=root.quit ,padx=20, pady=5).place(x=0.5, y=0.85)
+button = tk.Button(root, text="OK", command=root.quit )
+button.place(x=230, y=460)
+
 
 # เริ่มต้น main loop
 root.mainloop()
