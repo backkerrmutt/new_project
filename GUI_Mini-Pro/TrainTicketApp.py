@@ -1,4 +1,5 @@
 import tkinter as tk
+from contextlib import nullcontext
 from tkinter import messagebox
 from Ticket import Ticket
 import GUI as cr
@@ -38,6 +39,9 @@ class TrainTicketApp:
 
         if amount_paid < price:
             messagebox.showerror("Error", "Insufficient amount paid")
+            return
+        elif not self.start_station_var.get() or not self.end_station_var.get() or not self.distance_var.get() or not self.price_var.get() or not self.amount_paid_var.get():
+            messagebox.showerror("Input Error", "All fields must be filled out.")
             return
 
         ticket = Ticket(start_station, end_station, distance, price)
