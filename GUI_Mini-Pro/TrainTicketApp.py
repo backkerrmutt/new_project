@@ -1,8 +1,10 @@
 import tkinter as tk
-from contextlib import nullcontext
 from tkinter import messagebox
-from Ticket import Ticket
 import GUI as cr
+from Rate_Of_Between_Station import Rate_Cal
+from Ticket import Ticket
+
+
 
 class TrainTicketApp:
     def __init__(self, root):
@@ -74,12 +76,11 @@ class TrainTicketApp:
         ("เคหะฯ (E23)", 48)
     ]
 
-
     def calculate_change(self):
-        price = self.price_var.get()
-        amount_paid = self.amount_paid_var.get()
-        change = amount_paid - price
-        self.change_var.set(change)
+        s_station = self.cel_distance(self.start_station_var.get())
+        e_station = self.cel_distance(self.end_station_var.get())
+        Rate_Cal(self, s_station, e_station)
+
 
     def sell_ticket(self):
         start_station = self.start_station_var.get()
@@ -95,8 +96,8 @@ class TrainTicketApp:
         elif not self.start_station_var.get() or not self.end_station_var.get() or not self.distance_var.get() or not self.price_var.get() or not self.amount_paid_var.get():
             messagebox.showerror("Input Error", "All fields must be filled out.")
             return
-
-        ticket = Ticket(start_station, end_station, distance, price)
+        # History of ticket
+        # ticket = Ticket(start_station, end_station, distance, price)
         self.tickets.append((start_station, end_station))
         self.revenue.append(price)
         self.changes.append(change)
@@ -112,4 +113,23 @@ class TrainTicketApp:
         self.amount_paid_var.set(0)
         self.change_var.set(0)
 
+    def show_selected(self):
 
+        result_text = f"Selected Start Station: {self.start_station_var.get()} Selected End Station: {self.end_station_var.get()}"
+        print(result_text)
+        start_station = self.cel_distance(self.start_station_var.get())
+        end_station = self.cel_distance(self.end_station_var.get())
+        print(start_station, end_station)
+
+        if start_station is not None and end_station is not None:
+            self.distance_var.set(abs(start_station - end_station))
+            print(f"distace : {self.distance_var.get()} station")
+            self.calculate_change()
+        else:
+            print("Error: One of the stations is None")
+
+
+    def cel_distance(self, find_station):
+        for key, value in self.locations:
+            if key == find_station:
+                return value

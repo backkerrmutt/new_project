@@ -16,6 +16,8 @@ stations = [
         "ศรีนครินทร์ (E20)", "แพรกษา (E21)", "สายลวด (E22)", "เคหะฯ (E23)"
     ]
 
+
+
 def create_widgets(self):
     # สร้างตัวแปรสำหรับเก็บค่าที่เลือกขาไป
     selected_stationStart = tk.StringVar()
@@ -32,6 +34,13 @@ def create_widgets(self):
     option_menu = tk.OptionMenu(self.root, selected_stationEnd, *stations)
     option_menu.grid(row=1, column=1, columnspan=4)
     self.end_station_var = selected_stationEnd
+
+
+    # สร้างปุ่มเพื่อแสดงค่าที่เลือก
+    tk.Button(self.root, text="Show" , command=self.show_selected).grid(row=5, column=0, columnspan=2)
+
+
+
 
     # tk.Label(self.root, text="Distance (km):").grid(row=2, column=0)
     # tk.Entry(self.root, textvariable=self.distance_var).grid(row=2, column=1)
