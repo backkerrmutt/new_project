@@ -79,7 +79,7 @@ class TrainTicketApp:
     def calculate_change(self):
         s_station = self.cel_distance(self.start_station_var.get())
         e_station = self.cel_distance(self.end_station_var.get())
-        Rate_Cal(self, s_station, e_station)
+        Rate_Cal(s_station, e_station)
 
 
     def sell_ticket(self):
