@@ -1,15 +1,16 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, Label
+
+from django.db.models.expressions import result
+
 import GUI as cr
 from Rate_Of_Between_Station import Rate_Cal
 from Ticket import Ticket
+from tkinter import simpledialog
 
 
 
 class TrainTicketApp:
-
-    start_changed = False
-    end_changed = False
 
     def __init__(self, root):
         self.root = root
@@ -22,7 +23,8 @@ class TrainTicketApp:
         self.amount_paid_var = tk.IntVar()
         self.change_var = tk.IntVar()
         self.tickets = []
-        self.index_tic = 0
+        self.Num_tic = 1
+
         cr.create_widgets(self)
 
     #Data for calculation---------------------------------------------
@@ -35,89 +37,61 @@ class TrainTicketApp:
         ("ปุณณวิถี (E11)", 36),("อุดมสุข (E12)", 37),("บางนา (E13)", 38),("แบริ่ง (E14)", 39),("สำโรง (E15)", 40),("ปู่เจ้า (E16)", 41),("ช้างเอราวัณ (E17)", 42),
         ("โรงเรียนนายเรือ (E18)", 43),("ปากน้ำ (E19)", 44),("ศรีนครินทร์ (E20)", 45),("แพรกษา (E21)", 46),("สายลวด (E22)", 47),("เคหะฯ (E23)", 48)]
 
-    def calculate_change(self):
+    def calculate_price(self):
         s_station = self.cel_distance(self.start_station_var.get())
         e_station = self.cel_distance(self.end_station_var.get())
         self.price_var = Rate_Cal(s_station, e_station)
-        tk.Label(self.root, text="Price Of Ticket   :  " + str(self.price_var) + " Bath").grid(row=3, column=0)
+        tk.Label(self.root, text="Price Of Ticket   :  " + str(self.price_var) + " Baht").grid(row=3, column=0)
+
+    def check_both_changed(self, *args):
+        start_station = self.cel_distance(self.start_station_var.get())
+        end_station = self.cel_distance(self.end_station_var.get())
+
+        if start_station is not None and end_station is not None:
+            self.distance_var = (abs(start_station - end_station))
+            tk.Label(self.root, text="Distance : " + str(self.distance_var) + "  Station").grid(row=2, column=0)
+            self.calculate_price()
+
     def sell_ticket(self):
-        start_station = self.start_station_var.get()
-        end_station = self.end_station_var.get()
-        distance = self.distance_var.get()
-        price = self.price_var.get()
-        amount_paid = self.amount_paid_var.get()
-        change = self.change_var.get()
+        self.amount_paid_var = simpledialog.askinteger("Make a payment", "Please enter your amount paid:")
 
-        if amount_paid < price:
+        if self.amount_paid_var < self.price_var:
             messagebox.showerror("Error", "Insufficient amount paid")
-            return
-        elif not self.start_station_var.get() or not self.end_station_var.get() or not self.distance_var.get() or not self.price_var.get() or not self.amount_paid_var.get():
+        elif not self.start_station_var.get() or not self.end_station_var.get() or not self.distance_var or not self.price_var or not self.amount_paid_var:
             messagebox.showerror("Input Error", "All fields must be filled out.")
-            return
+        self.change_var = self.amount_paid_var - self.price_var
 
+        #History of ticket
+        Tic = Ticket(self.Num_tic,self.start_station_var.get(), self.end_station_var.get(), self.distance_var, self.price_var)
+        self.tickets.append(Tic)
+        self.Num_tic = self.Num_tic + 1
 
-        # History of ticket
-        self.tickets[self.index_tic] = Ticket(start_station, end_station, distance, price)
-        self.tickets[self.index_tic].Display_Ticket()
-        self.index_tic = self.index_tic + 1
-
-
-        messagebox.showinfo("Success", "Ticket sold successfully")
+        messagebox.showinfo("Success", f"Ticket bought successfully \n Change : {self.change_var}  Baht")
         self.clear_fields()
+
+    def Ticket_History(self, *args):
+        mywindows = tk.Tk()
+        mywindows.title("Ticket History")
+        mywindows.geometry("500x700")
+        for i in range(len(self.tickets)):
+            result = self.tickets[i].Display_Ticket()
+            tk.Label(mywindows, text=result).grid(row=i, column=0)
 
     def clear_fields(self):
         self.start_station_var.set("")
         self.end_station_var.set("")
-        self.distance_var.set(0)
-        self.price_var.set(0)
-        self.amount_paid_var.set(0)
-        self.change_var.set(0)
-
-    def show_selected(self):
-
-        result_text = f"Selected Start Station: {self.start_station_var.get()} Selected End Station: {self.end_station_var.get()}"
-        print(result_text)
-        start_station = self.cel_distance(self.start_station_var.get())
-        end_station = self.cel_distance(self.end_station_var.get())
-        print(start_station, end_station)
-
-        if start_station is not None and end_station is not None:
-            self.distance_var.set(abs(start_station - end_station))
-            print(f"distace : {self.distance_var.get()} station")
-            self.calculate_change()
-        else:
-            print("Error: One of the stations is None")
+        self.distance_var = 0
+        self.price_var = 0
+        self.amount_paid_var = 0
+        self.change_var = 0
+        tk.Label(self.root, text="Distance : " + str(self.distance_var) + "  Station ").grid(row=2, column=0)
+        tk.Label(self.root, text="Price Of Ticket   :  " + str(self.price_var) + "Bath").grid(row=3, column=0)
 
     def cel_distance(self, find_station):
         for key, value in self.locations:
             if key == find_station:
                 return value
 
-    # ตรวจสอบการเปลี่ยนแปลงของ start , end
-    def on_start_change(self, *args):
-        global start_changed
-        start_changed = True
-        self.check_both_changed()
 
-    def on_end_change(self, *args):
-        global end_changed
-        end_changed = True
-        self.check_both_changed()
-
-    def check_both_changed(self):
-        global start_changed, end_changed
-        start_station = self.cel_distance(self.start_station_var.get())
-        end_station = self.cel_distance(self.end_station_var.get())
-
-        if start_station is not None and end_station is not None:
-            self.distance_var = (abs(start_station - end_station))
-            if start_changed and end_changed:
-                start_changed = False
-                end_changed = False
-                tk.Label(self.root, text="Distance : " + str(self.distance_var) + "Station").grid(row=2, column=0)
-
-            self.calculate_change()
-        else:
-            return
 
 

@@ -36,13 +36,18 @@ def create_widgets(self):
     option_menu.grid(row=1, column=1)
     self.end_station_var = selected_stationEnd
 
-    selected_stationStart.trace_add("write", self.on_start_change)
-    selected_stationEnd.trace_add("write", self.on_end_change)
+    selected_stationStart.trace_add("write", self.check_both_changed)
+    selected_stationEnd.trace_add("write", self.check_both_changed)
+
+    tk.Label(self.root, text="Distance : "  + " 0 " + " Station").grid(row=2, column=0)
+    tk.Label(self.root, text="Price Of Ticket   :  " + "0" + " Bath").grid(row=3, column=0)
 
 
 
     # สร้างปุ่มเพื่อแสดงค่าที่เลือก
-    tk.Button(self.root, text="Buy Ticket" , command=self.show_selected).grid(row=5, column=0)
+    tk.Button(self.root, text="Buy Ticket", command=self.sell_ticket).grid(row=5, column=0)
+
+    tk.Button(self.root, text="History of tickets", command=self.Ticket_History).grid(row=6, column=3)
 
 
 
