@@ -57,8 +57,12 @@ class TrainTicketApp:
 
         if self.amount_paid_var < self.price_var:
             messagebox.showerror("Error", "Insufficient amount paid")
+            return
         elif not self.start_station_var.get() or not self.end_station_var.get() or not self.distance_var or not self.price_var or not self.amount_paid_var:
             messagebox.showerror("Input Error", "All fields must be filled out.")
+            return
+
+        # ถอนเงิน
         self.change_var = self.amount_paid_var - self.price_var
 
         #History of ticket
@@ -66,29 +70,37 @@ class TrainTicketApp:
         self.tickets.append(Tic)
         Tic.Save_To_Excel()
 
+        # แสดงผลการชื้อ เมื่อซื้อสำเร็จ
         messagebox.showinfo("Success", f"Ticket bought successfully \n Change : {self.change_var}  Baht")
         self.clear_fields()
 
     # ดูข้อมูลการขายตั๋ว
     def Ticket_History(self, *args):
-        mywindows = tk.Tk()
-        mywindows.title("Ticket History")
-        mywindows.geometry("500x700")
-        try:
-            # Load the workbook and select the active worksheet
-            workbook = openpyxl.load_workbook('excel/ticket_info.xlsx')
-            sheet = workbook.active
+        # Prompt for username and password
+        username = simpledialog.askstring("Login", "Enter username:")
+        password = simpledialog.askstring("Login", "Enter password:", show='*')
+        if username == "admin" and password == "admin":
+            mywindows = tk.Tk()
+            mywindows.title("Ticket History")
+            mywindows.geometry("500x700+800+50")
+            try:
+                # Load the workbook and select the active worksheet
+                workbook = openpyxl.load_workbook('excel/ticket_info.xlsx')
+                sheet = workbook.active
 
-            # Iterate through the rows and print the data
-            for row_idx, row in enumerate(sheet.iter_rows(values_only=True)):
-                for col_idx, value in enumerate(row):
-                    tk.Label(mywindows, text=value, font=("Arial", 12)).grid(row=row_idx, column=col_idx)
-                print(row)
+             # Iterate through the rows and print the data
+                for row_idx, row in enumerate(sheet.iter_rows(values_only=True)):
+                    for col_idx, value in enumerate(row):
+                        tk.Label(mywindows, text=value, font=("Arial", 12)).grid(row=row_idx, column=col_idx)
 
-        except FileNotFoundError:
-            print(f"File not found: {'ticket_info.xlsx'}")
-        except Exception as e:
-            print(f"An error occurred: {e}")
+
+            except FileNotFoundError:
+                print(f"File not found: {'ticket_info.xlsx'}")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        else:
+            messagebox.showerror("Login Failed", "Incorrect username or password")
+
 
     # ลบข้อมูลเมื่อกดซื้อสำเร็จ
     def clear_fields(self):

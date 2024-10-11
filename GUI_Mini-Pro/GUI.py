@@ -46,9 +46,9 @@ def create_widgets(self):
     tk.Label(self.root, text="Distance :  " + "0" + "  Station" ,font=("Arial", 20), background="#ECDFCC", bd=10).place(x=20, y=210)
     tk.Label(self.root, text="Price Of Ticket  :  " + "0" + "  Bath" ,font=("Arial", 20), background="#ECDFCC", bd=10).place(x=20, y=290)
 
-
-    # # สร้างปุ่มเพื่อแสดงค่าที่เลือก
+    # ซื้อตั๋ว
     tk.Button(self.root, text="Buy Ticket" ,font=("Arial", 20), background="#A5B68D", bd=10, command=self.sell_ticket).place(x=200, y=400)
+    # สร้างปุ่มเพื่อแสดงค่าที่เลือก
     tk.Button(self.root, text="History of tickets",font=("Arial", 20), background="#A5B68D", bd=10, command=self.Ticket_History).place(x=300, y=600)
 
 
