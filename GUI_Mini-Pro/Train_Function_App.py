@@ -1,5 +1,9 @@
 import tkinter as tk
+from locale import windows_locale
 from tkinter import messagebox
+
+from requests import delete
+
 import GUI as cr
 from Rate_Of_Between_Station import Rate_Cal
 from Ticket import Ticket
@@ -58,7 +62,7 @@ class TrainTicketApp:
         if self.amount_paid_var < self.price_var:
             messagebox.showerror("Error", "Insufficient amount paid")
             return
-        elif not self.start_station_var.get() or not self.end_station_var.get() or not self.distance_var or not self.price_var or not self.amount_paid_var:
+        elif not self.start_station_var.get() or not self.end_station_var.get()  or not self.price_var or not self.amount_paid_var:
             messagebox.showerror("Input Error", "All fields must be filled out.")
             return
 
@@ -79,10 +83,11 @@ class TrainTicketApp:
         # Prompt for username and password
         username = simpledialog.askstring("Login", "Enter username:")
         password = simpledialog.askstring("Login", "Enter password:", show='*')
+        mywindows = tk.Tk()
+        row = 0
         if username == "admin" and password == "admin":
-            mywindows = tk.Tk()
             mywindows.title("Ticket History")
-            mywindows.geometry("500x700+800+50")
+            # mywindows.geometry("600x700+800+50")
             try:
                 # Load the workbook and select the active worksheet
                 workbook = openpyxl.load_workbook('excel/ticket_info.xlsx')
@@ -92,7 +97,7 @@ class TrainTicketApp:
                 for row_idx, row in enumerate(sheet.iter_rows(values_only=True)):
                     for col_idx, value in enumerate(row):
                         tk.Label(mywindows, text=value, font=("Arial", 12)).grid(row=row_idx, column=col_idx)
-
+                    row = row_idx + 1
 
             except FileNotFoundError:
                 print(f"File not found: {'ticket_info.xlsx'}")
@@ -100,7 +105,13 @@ class TrainTicketApp:
                 print(f"An error occurred: {e}")
         else:
             messagebox.showerror("Login Failed", "Incorrect username or password")
+        if self.tickets:
+            self.delete_history(mywindows,row)
+        else:
+            return
 
+    def delete_history (self,mywindows_root,row):
+        tk.Button(mywindows_root, text="History of tickets", font=("Arial", 10),command=lambda: self.tickets[0].delete_all_data()).grid(row=row, column=4, sticky='se', padx=10, pady=10)
 
     # ลบข้อมูลเมื่อกดซื้อสำเร็จ
     def clear_fields(self):
@@ -116,6 +127,7 @@ class TrainTicketApp:
         for key, value in self.locations:
             if key == find_station:
                 return value
+
 
 
 

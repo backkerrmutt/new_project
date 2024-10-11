@@ -1,5 +1,6 @@
 from openpyxl import load_workbook
 import openpyxl
+from tkinter import simpledialog, messagebox
 
 class Ticket:
     filename = 'excel/ticket_info.xlsx' # ที่อยู่ของ file เก็บข้อมูลการซื่อตั๋ว
@@ -36,26 +37,29 @@ class Ticket:
         print(f"Ticket information saved to {self.filename}")
 
     # ลบข้อมูล clear data
-    def delete_all_data(file_path):
-        try:
-            # Load the workbook and select the active worksheet
-            workbook = openpyxl.load_workbook(file_path)
-            sheet = workbook.active
+    def delete_all_data(self, *args):
+        password = simpledialog.askstring("Verify", "Enter password:", show='*')
+        if password == "admin":
+            try:
+                # Load the workbook and select the active worksheet
+                workbook = openpyxl.load_workbook(self.filename)
+                sheet = workbook.active
 
-            # Clear all rows except the header
-            for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
-                for cell in row:
-                    cell.value = None
+                # Clear all rows except the header
+                for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
+                    for cell in row:
+                        cell.value = None
 
-            # Save the workbook
-            workbook.save(file_path)
-            print(f"All data deleted from {file_path}")
-        except FileNotFoundError:
-            print(f"File not found: {file_path}")
-        except Exception as e:
-            print(f"An error occurred: {e}")
+                # Save the workbook
+                workbook.save(self.filename)
+                print(f"All data deleted from {self}")
+            except FileNotFoundError:
+                print(f"File not found: {self.filename}")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        else:messagebox.showerror("Delete Data Failed", "Incorrect password")
+
+
 
     # เปิดใช้ฟังกืชันเพื่อลบข้อมูล
-    # delete_all_data(filename)
-
-
+    # delete_all_data()
