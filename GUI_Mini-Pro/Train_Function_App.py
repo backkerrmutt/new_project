@@ -1,12 +1,11 @@
 import tkinter as tk
-from tkinter import messagebox, Label
-
-from django.db.models.expressions import result
-
+from cProfile import label
+from tkinter import messagebox
 import GUI as cr
 from Rate_Of_Between_Station import Rate_Cal
 from Ticket import Ticket
 from tkinter import simpledialog
+import openpyxl
 
 
 
@@ -23,7 +22,7 @@ class TrainTicketApp:
         self.amount_paid_var = tk.IntVar()
         self.change_var = tk.IntVar()
         self.tickets = []
-        self.Num_tic = 1
+
 
         cr.create_widgets(self)
 
@@ -62,9 +61,9 @@ class TrainTicketApp:
         self.change_var = self.amount_paid_var - self.price_var
 
         #History of ticket
-        Tic = Ticket(self.Num_tic,self.start_station_var.get(), self.end_station_var.get(), self.distance_var, self.price_var)
+        Tic = Ticket(self.start_station_var.get(), self.end_station_var.get(), self.distance_var, self.price_var)
         self.tickets.append(Tic)
-        self.Num_tic = self.Num_tic + 1
+        Tic.Save_To_Excel()
 
         messagebox.showinfo("Success", f"Ticket bought successfully \n Change : {self.change_var}  Baht")
         self.clear_fields()
@@ -73,9 +72,21 @@ class TrainTicketApp:
         mywindows = tk.Tk()
         mywindows.title("Ticket History")
         mywindows.geometry("500x700")
-        for i in range(len(self.tickets)):
-            result = self.tickets[i].Display_Ticket()
-            tk.Label(mywindows, text=result).grid(row=i, column=0)
+        try:
+            # Load the workbook and select the active worksheet
+            workbook = openpyxl.load_workbook('excel/ticket_info.xlsx')
+            sheet = workbook.active
+
+            # Iterate through the rows and print the data
+            for row_idx, row in enumerate(sheet.iter_rows(values_only=True)):
+                for col_idx, value in enumerate(row):
+                    tk.Label(mywindows, text=value, font=("Arial", 12)).grid(row=row_idx, column=col_idx)
+                print(row)
+
+        except FileNotFoundError:
+            print(f"File not found: {'ticket_info.xlsx'}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
     def clear_fields(self):
         self.start_station_var.set("")
@@ -84,8 +95,6 @@ class TrainTicketApp:
         self.price_var = 0
         self.amount_paid_var = 0
         self.change_var = 0
-        tk.Label(self.root, text="Distance : " + str(self.distance_var) + "  Station ").grid(row=3, column=0)
-        tk.Label(self.root, text="Price Of Ticket   :  " + str(self.price_var) + "Bath").grid(row=4, column=0)
 
     def cel_distance(self, find_station):
         for key, value in self.locations:
