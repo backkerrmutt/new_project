@@ -1,5 +1,6 @@
 import pandas as pd
 
+#คำนวนหาค่าโดยสารตามระยะ
 def Rate_Cal(s_station, e_station):
 
     data = pd.read_excel('excel/Station_Atago.xlsx',sheet_name='Price')

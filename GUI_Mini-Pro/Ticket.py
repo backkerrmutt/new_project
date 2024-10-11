@@ -2,7 +2,8 @@ from openpyxl import load_workbook
 import openpyxl
 
 class Ticket:
-    filename = 'excel/ticket_info.xlsx'
+    filename = 'excel/ticket_info.xlsx' # ที่อยู่ของ file เก็บข้อมูลการซื่อตั๋ว
+
     def __init__(self, start_station, end_station, distance, price):
         self.Num_tic = 1
         self.start_station = start_station
@@ -10,6 +11,7 @@ class Ticket:
         self.distance = distance
         self.price = price
 
+    # เพิ่มข้อมูลตั๋วลงตาราง
     def Save_To_Excel(self):
 
         try:
@@ -33,6 +35,7 @@ class Ticket:
         workbook.save(self.filename)
         print(f"Ticket information saved to {self.filename}")
 
+    # ลบข้อมูล clear data
     def delete_all_data(file_path):
         try:
             # Load the workbook and select the active worksheet

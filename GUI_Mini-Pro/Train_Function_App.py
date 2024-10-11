@@ -1,5 +1,4 @@
 import tkinter as tk
-from cProfile import label
 from tkinter import messagebox
 import GUI as cr
 from Rate_Of_Between_Station import Rate_Cal
@@ -10,6 +9,16 @@ import openpyxl
 
 
 class TrainTicketApp:
+
+    #Data for calculation---------------------------------------------
+    locations = [
+        ("คูคต (N24)", 1),("แยก คปอ. (N23)", 2),("พิพิธภัณฑ์กองทัพอากาศ (N22)", 3),("โรงพยาบาลภูมิพลอดุลยเดช (N21)", 4),("สะพานใหม่ (N20)", 5),("สายหยุด (N19)", 6),
+        ("พหลโยธิน 59 (N18)", 7),("วัดพระศรีมหาธาตุ (N17)", 8),("กรมทหารราบที่ 11 (N16)", 9),("บางบัว (N15)", 10),("กรมป่าไม้ (N14)", 11),("มหาวิทยาลัยเกษตรศาสตร์ (N13)", 12),
+        ("เสนานิคม (N12)", 13),("รัชโยธิน (N11)", 14),("พหลโยธิน 24 (N10)", 15),("ห้าแยกลาดพร้าว (N9)", 16),("หมอชิต (N8)", 17),("สะพานควาย (N7)", 18),("เสนาร่วม (N6)", 19),
+        ("อารีย์ (N5)", 20),("สนามเป้า (N4)", 21),("อนุสาวรีย์ชัยสมรภูมิ (N3)", 22),("พญาไท (N2)", 23),("ราชเทวี (N1)", 24),("สยาม (CEN)", 25),("ชิดลม (E1)", 26),("เพลินจิต (E2)", 27),
+        ("นานา (E3)", 28),("อโศก (E4)", 29),("พร้อมพงษ์ (E5)", 30),("ทองหล่อ (E6)", 31),("เอกมัย (E7)", 32),("พระโขนง (E8)", 33),("อ่อนนุช (E9)", 34),("บางจาก (E10)", 35),
+        ("ปุณณวิถี (E11)", 36),("อุดมสุข (E12)", 37),("บางนา (E13)", 38),("แบริ่ง (E14)", 39),("สำโรง (E15)", 40),("ปู่เจ้า (E16)", 41),("ช้างเอราวัณ (E17)", 42),
+        ("โรงเรียนนายเรือ (E18)", 43),("ปากน้ำ (E19)", 44),("ศรีนครินทร์ (E20)", 45),("แพรกษา (E21)", 46),("สายลวด (E22)", 47),("เคหะฯ (E23)", 48)]
 
     def __init__(self, root):
         self.root = root
@@ -23,25 +32,16 @@ class TrainTicketApp:
         self.change_var = tk.IntVar()
         self.tickets = []
 
-
         cr.create_widgets(self)
 
-    #Data for calculation---------------------------------------------
-    locations = [
-        ("คูคต (N24)", 1),("แยก คปอ. (N23)", 2),("พิพิธภัณฑ์กองทัพอากาศ (N22)", 3),("โรงพยาบาลภูมิพลอดุลยเดช (N21)", 4),("สะพานใหม่ (N20)", 5),("สายหยุด (N19)", 6),
-        ("พหลโยธิน 59 (N18)", 7),("วัดพระศรีมหาธาตุ (N17)", 8),("กรมทหารราบที่ 11 (N16)", 9),("บางบัว (N15)", 10),("กรมป่าไม้ (N14)", 11),("มหาวิทยาลัยเกษตรศาสตร์ (N13)", 12),
-        ("เสนานิคม (N12)", 13),("รัชโยธิน (N11)", 14),("พหลโยธิน 24 (N10)", 15),("ห้าแยกลาดพร้าว (N9)", 16),("หมอชิต (N8)", 17),("สะพานควาย (N7)", 18),("เสนาร่วม (N6)", 19),
-        ("อารีย์ (N5)", 20),("สนามเป้า (N4)", 21),("อนุสาวรีย์ชัยสมรภูมิ (N3)", 22),("พญาไท (N2)", 23),("ราชเทวี (N1)", 24),("สยาม (CEN)", 25),("ชิดลม (E1)", 26),("เพลินจิต (E2)", 27),
-        ("นานา (E3)", 28),("อโศก (E4)", 29),("พร้อมพงษ์ (E5)", 30),("ทองหล่อ (E6)", 31),("เอกมัย (E7)", 32),("พระโขนง (E8)", 33),("อ่อนนุช (E9)", 34),("บางจาก (E10)", 35),
-        ("ปุณณวิถี (E11)", 36),("อุดมสุข (E12)", 37),("บางนา (E13)", 38),("แบริ่ง (E14)", 39),("สำโรง (E15)", 40),("ปู่เจ้า (E16)", 41),("ช้างเอราวัณ (E17)", 42),
-        ("โรงเรียนนายเรือ (E18)", 43),("ปากน้ำ (E19)", 44),("ศรีนครินทร์ (E20)", 45),("แพรกษา (E21)", 46),("สายลวด (E22)", 47),("เคหะฯ (E23)", 48)]
-
+    # คำนวนหาค่าโดยสารตามระยะสถานี
     def calculate_price(self):
         s_station = self.cel_distance(self.start_station_var.get())
         e_station = self.cel_distance(self.end_station_var.get())
         self.price_var = Rate_Cal(s_station, e_station)
         tk.Label(self.root, text="Price Of Ticket  :  " + str(self.price_var) + "  Baht" ,font=("Arial", 20), background="#ECDFCC", bd=10).place(x=20, y=290)
 
+    # ติดตามการเปลี่ยนแปลงการเลือกสถานีใน DropDown-List
     def check_both_changed(self, *args):
         start_station = self.cel_distance(self.start_station_var.get())
         end_station = self.cel_distance(self.end_station_var.get())
@@ -51,6 +51,7 @@ class TrainTicketApp:
             tk.Label(self.root, text="Distance  :  " + str(self.distance_var) + "  Station" ,font=("Arial", 20), background="#ECDFCC", bd=10).place(x=20, y=210)
             self.calculate_price()
 
+    # ขายตั๋ว
     def sell_ticket(self):
         self.amount_paid_var = simpledialog.askinteger("Make a payment", "Please enter your amount paid:")
 
@@ -68,6 +69,7 @@ class TrainTicketApp:
         messagebox.showinfo("Success", f"Ticket bought successfully \n Change : {self.change_var}  Baht")
         self.clear_fields()
 
+    # ดูข้อมูลการขายตั๋ว
     def Ticket_History(self, *args):
         mywindows = tk.Tk()
         mywindows.title("Ticket History")
@@ -88,6 +90,7 @@ class TrainTicketApp:
         except Exception as e:
             print(f"An error occurred: {e}")
 
+    # ลบข้อมูลเมื่อกดซื้อสำเร็จ
     def clear_fields(self):
         self.start_station_var.set("")
         self.end_station_var.set("")
@@ -96,6 +99,7 @@ class TrainTicketApp:
         self.amount_paid_var = 0
         self.change_var = 0
 
+    # หาค่าของสถานี เพื่อใช้ในการคำนวณระยะห่างระหว่างสถานี
     def cel_distance(self, find_station):
         for key, value in self.locations:
             if key == find_station:

@@ -1,5 +1,4 @@
 import tkinter as tk
-from math import radians
 
 stations = [
         "คูคต (N24)", "แยก คปอ. (N23)", "พิพิธภัณฑ์กองทัพอากาศ (N22)", "โรงพยาบาลภูมิพลอดุลยเดช (N21)",
@@ -15,8 +14,6 @@ stations = [
         "ปู่เจ้า (E16)", "ช้างเอราวัณ (E17)", "โรงเรียนนายเรือ (E18)", "ปากน้ำ (E19)",
         "ศรีนครินทร์ (E20)", "แพรกษา (E21)", "สายลวด (E22)", "เคหะฯ (E23)"
     ]
-
-# ตัวแปรเพื่อติดตามการเปลี่ยนแปลง
 
 
 def create_widgets(self):
@@ -42,6 +39,7 @@ def create_widgets(self):
     option_menu.configure(background="#ECDFCC",font=("Arial", 20))
     self.end_station_var = selected_stationEnd
 
+    # ตัวแปรเพื่อติดตามการเปลี่ยนแปลง
     selected_stationStart.trace_add("write", self.check_both_changed)
     selected_stationEnd.trace_add("write", self.check_both_changed)
 
