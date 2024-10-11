@@ -14,7 +14,7 @@ class TrainTicketApp:
 
     def __init__(self, root):
         self.root = root
-        self.root.title("Train Ticket System")
+        self.root.title("Train Ticket Application")
 
         self.start_station_var = tk.StringVar()
         self.end_station_var = tk.StringVar()
@@ -41,7 +41,7 @@ class TrainTicketApp:
         s_station = self.cel_distance(self.start_station_var.get())
         e_station = self.cel_distance(self.end_station_var.get())
         self.price_var = Rate_Cal(s_station, e_station)
-        tk.Label(self.root, text="Price Of Ticket   :  " + str(self.price_var) + " Baht").grid(row=3, column=0)
+        tk.Label(self.root, text="Price Of Ticket  :  " + str(self.price_var) + "  Baht" ,font=("Arial", 20), background="#ECDFCC", bd=10).place(x=20, y=290)
 
     def check_both_changed(self, *args):
         start_station = self.cel_distance(self.start_station_var.get())
@@ -49,7 +49,7 @@ class TrainTicketApp:
 
         if start_station is not None and end_station is not None:
             self.distance_var = (abs(start_station - end_station))
-            tk.Label(self.root, text="Distance : " + str(self.distance_var) + "  Station").grid(row=2, column=0)
+            tk.Label(self.root, text="Distance  :  " + str(self.distance_var) + "  Station" ,font=("Arial", 20), background="#ECDFCC", bd=10).place(x=20, y=210)
             self.calculate_price()
 
     def sell_ticket(self):
@@ -84,8 +84,8 @@ class TrainTicketApp:
         self.price_var = 0
         self.amount_paid_var = 0
         self.change_var = 0
-        tk.Label(self.root, text="Distance : " + str(self.distance_var) + "  Station ").grid(row=2, column=0)
-        tk.Label(self.root, text="Price Of Ticket   :  " + str(self.price_var) + "Bath").grid(row=3, column=0)
+        tk.Label(self.root, text="Distance : " + str(self.distance_var) + "  Station ").grid(row=3, column=0)
+        tk.Label(self.root, text="Price Of Ticket   :  " + str(self.price_var) + "Bath").grid(row=4, column=0)
 
     def cel_distance(self, find_station):
         for key, value in self.locations:

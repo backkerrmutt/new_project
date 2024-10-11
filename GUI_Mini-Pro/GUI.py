@@ -1,4 +1,5 @@
 import tkinter as tk
+from math import radians
 
 stations = [
         "คูคต (N24)", "แยก คปอ. (N23)", "พิพิธภัณฑ์กองทัพอากาศ (N22)", "โรงพยาบาลภูมิพลอดุลยเดช (N21)",
@@ -20,34 +21,38 @@ stations = [
 
 def create_widgets(self):
 
+    #windown background color
+    self.root.configure(bg='#FCFAEE')
+
     # สร้างตัวแปรสำหรับเก็บค่าที่เลือกขาไป
     selected_stationStart = tk.StringVar()
     selected_stationStart.set("สถานีต้นทาง")
-    tk.Label(self.root, text="เลือกสถานี : ").grid(row=0, column=0)
-    option_menu = tk.OptionMenu(self.root, selected_stationStart, *stations)
-    option_menu.grid(row=0, column=1)
+    tk.Label(self.root, text="เลือกสถานี : " ,font=("Arial", 20), background="#DA8359", bd=10, relief="flat").place(x=20, y=50)
+    option_menu = tk.OptionMenu(self.root, selected_stationStart, *stations )
+    option_menu.place(x=200, y=55)
+    option_menu.configure(background="#ECDFCC",font=("Arial", 20))
     self.start_station_var = selected_stationStart
 
     # สร้างตัวแปรสำหรับเก็บค่าที่เลือกขากลับ
     selected_stationEnd = tk.StringVar()
     selected_stationEnd.set("สถานีปลายทาง")
-    tk.Label(self.root, text="เลือกสถานี : ").grid(row=1, column=0)
+    tk.Label(self.root, text="เลือกสถานี : " ,font=("Arial", 20), background="#DA8359", bd=10, relief="flat").place(x=20, y=130)
     option_menu = tk.OptionMenu(self.root, selected_stationEnd, *stations)
-    option_menu.grid(row=1, column=1)
+    option_menu.place(x=200, y=130)
+    option_menu.configure(background="#ECDFCC",font=("Arial", 20))
     self.end_station_var = selected_stationEnd
 
     selected_stationStart.trace_add("write", self.check_both_changed)
     selected_stationEnd.trace_add("write", self.check_both_changed)
 
-    tk.Label(self.root, text="Distance : "  + " 0 " + " Station").grid(row=2, column=0)
-    tk.Label(self.root, text="Price Of Ticket   :  " + "0" + " Bath").grid(row=3, column=0)
+    tk.Label(self.root, text="Distance :  " + "0" + "  Station" ,font=("Arial", 20), background="#ECDFCC", bd=10).place(x=20, y=210)
+    tk.Label(self.root, text="Price Of Ticket  :  " + "0" + "  Bath" ,font=("Arial", 20), background="#ECDFCC", bd=10).place(x=20, y=290)
 
 
+    # # สร้างปุ่มเพื่อแสดงค่าที่เลือก
+    tk.Button(self.root, text="Buy Ticket" ,font=("Arial", 20), background="#A5B68D", bd=10, command=self.sell_ticket).place(x=200, y=400)
+    tk.Button(self.root, text="History of tickets",font=("Arial", 20), background="#A5B68D", bd=10, command=self.Ticket_History).place(x=300, y=600)
 
-    # สร้างปุ่มเพื่อแสดงค่าที่เลือก
-    tk.Button(self.root, text="Buy Ticket", command=self.sell_ticket).grid(row=5, column=0)
-
-    tk.Button(self.root, text="History of tickets", command=self.Ticket_History).grid(row=6, column=3)
 
 
 
